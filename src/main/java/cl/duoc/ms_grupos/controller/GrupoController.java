@@ -50,21 +50,7 @@ public class GrupoController {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // =========================================================
-    // POST /api/grupos
-    // Crear un grupo nuevo
-    // =========================================================
-    /*
-     * Header: Authorization: Bearer {token}
-     * Body:
-     * {
-     *   "nombre": "Jugadores Magic Santiago",
-     *   "descripcion": "Grupo para coordinar partidas"
-     * }
-     *
-     * El usuario que crea el grupo queda automaticamente como ADMIN.
-     * Respuesta 201: el grupo recien creado con el creador como unico miembro.
-     */
+
     @PostMapping
     public ResponseEntity<?> crearGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
@@ -86,16 +72,7 @@ public class GrupoController {
         }
     }
 
-    // =========================================================
-    // GET /api/grupos
-    // Ver todos los grupos existentes
-    // =========================================================
-    /*
-     * Header: Authorization: Bearer {token}
-     *
-     * Cualquier usuario autenticado puede ver la lista completa.
-     * Util para buscar grupos a los que unirse.
-     */
+
     @GetMapping
     public ResponseEntity<?> listarGrupos(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -109,16 +86,7 @@ public class GrupoController {
         return ResponseEntity.ok(grupos);
     }
 
-    // =========================================================
-    // GET /api/grupos/mios
-    // Ver los grupos en los que participa el usuario autenticado
-    // =========================================================
-    /*
-     * IMPORTANTE: este endpoint va ANTES de /api/grupos/{id}
-     * porque si no, Spring interpreta "mios" como un {id}.
-     *
-     * Header: Authorization: Bearer {token}
-     */
+
     @GetMapping("/mios")
     public ResponseEntity<?> misGrupos(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
@@ -133,10 +101,6 @@ public class GrupoController {
         return ResponseEntity.ok(grupos);
     }
 
-    // =========================================================
-    // GET /api/grupos/{id}
-    // Ver el detalle de un grupo con sus miembros
-    // =========================================================
     @GetMapping("/{id}")
     public ResponseEntity<?> verGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
@@ -156,16 +120,7 @@ public class GrupoController {
         }
     }
 
-    // =========================================================
-    // POST /api/grupos/{id}/unirse
-    // Unirse a un grupo existente
-    // =========================================================
-    /*
-     * Header: Authorization: Bearer {token}
-     *
-     * No necesita body. El usuario que se une es el del token.
-     * Respuesta 200: el grupo actualizado con el nuevo miembro.
-     */
+
     @PostMapping("/{id}/unirse")
     public ResponseEntity<?> unirseAGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
@@ -187,16 +142,7 @@ public class GrupoController {
         }
     }
 
-    // =========================================================
-    // DELETE /api/grupos/{id}/salir
-    // Salir de un grupo
-    // =========================================================
-    /*
-     * Header: Authorization: Bearer {token}
-     *
-     * El usuario sale del grupo. Si es ADMIN, debe eliminar el grupo.
-     * Respuesta 200: el grupo actualizado sin ese miembro.
-     */
+
     @DeleteMapping("/{id}/salir")
     public ResponseEntity<?> salirDeGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
