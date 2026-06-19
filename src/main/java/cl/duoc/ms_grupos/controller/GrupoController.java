@@ -20,6 +20,7 @@ import cl.duoc.ms_grupos.dto.CrearGrupoDto;
 import cl.duoc.ms_grupos.dto.GrupoRespuestaDto;
 import cl.duoc.ms_grupos.security.JwtUtil;
 import cl.duoc.ms_grupos.service.GrupoService;
+import jakarta.validation.Valid;
 
 /*
  * Controlador REST de ms-grupos.
@@ -54,7 +55,7 @@ public class GrupoController {
     @PostMapping
     public ResponseEntity<?> crearGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
-            @RequestBody CrearGrupoDto dto) {
+            @Valid @RequestBody CrearGrupoDto dto) {
 
         String token = validarHeader(authHeader);
         if (token == null) {

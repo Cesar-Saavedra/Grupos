@@ -1,5 +1,7 @@
 package cl.duoc.ms_grupos.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 /*
@@ -14,6 +16,10 @@ import lombok.Data;
 @Data
 public class CrearGrupoDto {
 
+    @NotBlank(message = "El nombre del grupo es obligatorio")
+    @Size(min = 3, max = 100, message = "El nombre debe tener entre 3 y 100 caracteres")
     private String nombre;
+
+    @Size(max = 500, message = "La descripcion no puede superar los 500 caracteres")
     private String descripcion;
 }
