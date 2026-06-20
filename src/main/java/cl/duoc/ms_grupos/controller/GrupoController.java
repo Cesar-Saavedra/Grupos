@@ -20,6 +20,8 @@ import cl.duoc.ms_grupos.dto.CrearGrupoDto;
 import cl.duoc.ms_grupos.dto.GrupoRespuestaDto;
 import cl.duoc.ms_grupos.security.JwtUtil;
 import cl.duoc.ms_grupos.service.GrupoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 /*
@@ -43,6 +45,7 @@ import jakarta.validation.Valid;
  */
 @RestController
 @RequestMapping("/api/grupos")
+@Tag(name = "Grupos", description = "Gestión de grupos de jugadores")
 public class GrupoController {
 
     @Autowired
@@ -53,6 +56,7 @@ public class GrupoController {
 
 
     @PostMapping
+    @Operation(summary = "Crear grupo", description = "Crea un nuevo grupo. El usuario autenticado pasa a ser el administrador.")
     public ResponseEntity<?> crearGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @Valid @RequestBody CrearGrupoDto dto) {
@@ -75,6 +79,7 @@ public class GrupoController {
 
 
     @GetMapping
+    @Operation(summary = "Listar grupos", description = "Devuelve todos los grupos disponibles.")
     public ResponseEntity<?> listarGrupos(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
@@ -89,6 +94,7 @@ public class GrupoController {
 
 
     @GetMapping("/mios")
+    @Operation(summary = "Mis grupos", description = "Devuelve los grupos en los que participa el usuario autenticado.")
     public ResponseEntity<?> misGrupos(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
@@ -103,6 +109,7 @@ public class GrupoController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Ver grupo por ID", description = "Devuelve el detalle completo de un grupo.")
     public ResponseEntity<?> verGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Integer id) {
@@ -123,6 +130,7 @@ public class GrupoController {
 
 
     @PostMapping("/{id}/unirse")
+    @Operation(summary = "Unirse a un grupo", description = "El usuario autenticado se une al grupo indicado.")
     public ResponseEntity<?> unirseAGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Integer id) {
@@ -145,6 +153,7 @@ public class GrupoController {
 
 
     @DeleteMapping("/{id}/salir")
+    @Operation(summary = "Salir de un grupo", description = "El usuario autenticado abandona el grupo indicado.")
     public ResponseEntity<?> salirDeGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Integer id) {
@@ -176,6 +185,7 @@ public class GrupoController {
      * Respuesta 200: mensaje de confirmacion.
      */
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar grupo", description = "Elimina el grupo y todos sus miembros. Solo el ADMIN del grupo puede hacerlo.")
     public ResponseEntity<?> eliminarGrupo(
             @RequestHeader(value = "Authorization", required = false) String authHeader,
             @PathVariable Integer id) {
