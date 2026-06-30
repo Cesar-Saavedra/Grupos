@@ -21,6 +21,11 @@ import cl.duoc.ms_grupos.dto.GrupoRespuestaDto;
 import cl.duoc.ms_grupos.security.JwtUtil;
 import cl.duoc.ms_grupos.service.GrupoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -57,8 +62,30 @@ public class GrupoController {
 
     @PostMapping
     @Operation(summary = "Crear grupo", description = "Crea un nuevo grupo. El usuario autenticado pasa a ser el administrador.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Grupo creado", content = @Content(
+                    examples = @ExampleObject(name = "GrupoCreado", value = """
+                            {
+                              "id": 1,
+                              "nombre": "Jugadores Magic Santiago Centro",
+                              "descripcion": "Grupo para coordinar partidas y torneos casuales",
+                              "adminId": 5,
+                              "miembros": [5]
+                            }
+                            """))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado")
+    })
     public ResponseEntity<?> crearGrupo(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}'", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Datos del grupo a crear", required = true,
+                    content = @Content(examples = @ExampleObject(value = """
+                            {
+                              "nombre": "Jugadores Magic Santiago Centro",
+                              "descripcion": "Grupo para coordinar partidas y torneos casuales"
+                            }
+                            """)))
             @Valid @RequestBody CrearGrupoDto dto) {
 
         String token = validarHeader(authHeader);
@@ -80,7 +107,12 @@ public class GrupoController {
 
     @GetMapping
     @Operation(summary = "Listar grupos", description = "Devuelve todos los grupos disponibles.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de grupos obtenida correctamente"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado")
+    })
     public ResponseEntity<?> listarGrupos(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}'", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         String token = validarHeader(authHeader);
@@ -95,7 +127,12 @@ public class GrupoController {
 
     @GetMapping("/mios")
     @Operation(summary = "Mis grupos", description = "Devuelve los grupos en los que participa el usuario autenticado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de grupos del usuario"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado")
+    })
     public ResponseEntity<?> misGrupos(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}'", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
         String token = validarHeader(authHeader);
@@ -110,8 +147,15 @@ public class GrupoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Ver grupo por ID", description = "Devuelve el detalle completo de un grupo.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Grupo encontrado"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado"),
+            @ApiResponse(responseCode = "404", description = "El grupo no existe")
+    })
     public ResponseEntity<?> verGrupo(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}'", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Parameter(description = "ID del grupo", required = true, example = "1")
             @PathVariable Integer id) {
 
         String token = validarHeader(authHeader);
@@ -131,8 +175,15 @@ public class GrupoController {
 
     @PostMapping("/{id}/unirse")
     @Operation(summary = "Unirse a un grupo", description = "El usuario autenticado se une al grupo indicado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario agregado al grupo"),
+            @ApiResponse(responseCode = "400", description = "Ya pertenece al grupo u otro error de negocio"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado")
+    })
     public ResponseEntity<?> unirseAGrupo(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}'", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Parameter(description = "ID del grupo al que se desea unir", required = true, example = "1")
             @PathVariable Integer id) {
 
         String token = validarHeader(authHeader);
@@ -154,8 +205,15 @@ public class GrupoController {
 
     @DeleteMapping("/{id}/salir")
     @Operation(summary = "Salir de un grupo", description = "El usuario autenticado abandona el grupo indicado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuario removido del grupo"),
+            @ApiResponse(responseCode = "400", description = "El usuario no pertenece al grupo u otro error de negocio"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado")
+    })
     public ResponseEntity<?> salirDeGrupo(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}'", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Parameter(description = "ID del grupo del que se desea salir", required = true, example = "1")
             @PathVariable Integer id) {
 
         String token = validarHeader(authHeader);
@@ -186,8 +244,15 @@ public class GrupoController {
      */
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar grupo", description = "Elimina el grupo y todos sus miembros. Solo el ADMIN del grupo puede hacerlo.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Grupo eliminado correctamente"),
+            @ApiResponse(responseCode = "400", description = "El usuario no es el ADMIN del grupo u otro error de negocio"),
+            @ApiResponse(responseCode = "401", description = "Token ausente, inválido o expirado")
+    })
     public ResponseEntity<?> eliminarGrupo(
+            @Parameter(description = "Token JWT con formato 'Bearer {token}', debe pertenecer al ADMIN del grupo", required = true)
             @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @Parameter(description = "ID del grupo a eliminar", required = true, example = "1")
             @PathVariable Integer id) {
 
         String token = validarHeader(authHeader);
