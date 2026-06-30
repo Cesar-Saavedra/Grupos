@@ -10,7 +10,8 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,6 +28,7 @@ import cl.duoc.ms_grupos.service.GrupoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @WebMvcTest(GrupoController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class GrupoControllerTest {
 
     @Autowired

@@ -4,7 +4,7 @@ spring:
   datasource:
     # Base de datos MySQL (XAMPP)
     # Crea la BD "ms_grupos" en phpMyAdmin antes de correr el proyecto.
-    url: jdbc:mysql://localhost:3307/ms_grupos
+    url: jdbc:mysql://localhost:3306/ms_grupos
     username: root
     password: 
   jpa:
